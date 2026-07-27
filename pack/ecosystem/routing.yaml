@@ -1,0 +1,152 @@
+# Машинный контракт маршрутизации знаний (WP-429 Ф6.1)
+# SoT для размещения записей этого Pack. Заменяет прозаические копии в:
+#   DP.KR.001 §5, memory/routing-vocab.md, memory/repo-type-rules.md, apply-captures/SKILL.md шаг 4в.
+# memory/routing-vocab.md — производная авто-собираемая проекция поверх этого файла, не редактировать вручную.
+# Ключ верхнего уровня — kinds: (код идентификатора, напр. ECO.M), НЕ types: (это поле frontmatter).
+# Вторичная сверка frontmatter — frontmatter_check: {field, value}; поле в этом Pack называется "type"
+# (не "kind" — см. PACK-verification для контраста). null — там, где у kind нет frontmatter вообще
+# или нет устоявшегося поля-значения.
+#
+# ВНИМАНИЕ (реальность на 2026-07-27, драйфы НЕ устраняются этим контрактом — Drift Reporting, CLAUDE.md):
+# 1. CLAUDE.md этого репо документирует структуру Pack БЕЗ каталога 02-distinctions/ (перечисляет
+#    только 02-domain-entities/) — на диске оба каталога существуют параллельно (оба с префиксом "02-").
+#    CLAUDE.md устарел относительно реальной структуры; не правился этим контрактом.
+# 2. Kind ECO.D — mixed-хранение (см. консенсус пир-сессии 2026-07-16, сессия
+#    2026-07-16-04-routing-contract-linter-knn, прецедент DP.D "файлы И секции"): основной массив —
+#    отдельные файлы в 02-distinctions/ (001-009, 013); под-домен business/ уносит 010-012 (легализовано
+#    отдельными kind-записями ниже — см. 02-domain-entities/business/README.md, "мини-инкарнация v1");
+#    ECO.D.019 и ECO.D.020 — та же нумерация ECO.D, но существуют как ВСТРОЕННЫЕ СЕКЦИИ внутри
+#    01B-distinctions.md (kind ECO.D.000 ниже), не отдельные файлы. Номера 014-018 в этой нумерации
+#    не найдены нигде в Pack (пробел в последовательности, не расследовано — возможно исторический,
+#    вне бюджета этой задачи).
+# 3. Kind ECO.SC — аналогичная (не mixed, просто вторая легальная директория) двойственность:
+#    ECO.SC.003 лежит в 02-domain-entities/, ECO.SC.001-002 — в 02-domain-entities/business/
+#    (тот же under-domain, тот же README).
+# 4. Файлы 01A-bounded-context.md / 01B-distinctions.md / s2r-view.md называются НЕ по ID-конвенции
+#    (ECO.BC.001 / ECO.D.000 / ECO.MAP.002 — только в frontmatter id:, не в имени файла на диске).
+#    kind_of() линтера матчит по префиксу ИМЕНИ ФАЙЛА (f6_placement_linter.py) — три kind-записи ниже
+#    (ECO.BC, ECO.D.000, ECO.MAP.002) технически НИКОГДА не выбираются линтером при разборе staged-файлов
+#    (тот же случай, что VR.ROLES в PACK-verification/pack/verification/routing.yaml — проверено:
+#    "VR.ROLES-summary.md".startswith("VR.ROLES.") == False). Включены для полноты routing-vocab /
+#    документации размещения, не для активного enforcement.
+schema_version: 1
+pack: ecosystem
+
+kinds:
+  ECO.BC:
+    dir: pack/ecosystem/01-domain-contract/
+    id_pattern: '01A-bounded-context\.md$'   # реальность: имя файла без ID-префикса, см. п.4 выше
+    frontmatter_check: {field: type, value: bounded-context}
+    storage: file
+
+  ECO.D.000:
+    dir: pack/ecosystem/01-domain-contract/
+    id_pattern: '01B-distinctions\.md$'   # реальность: имя файла без ID-префикса, см. п.4 выше
+    frontmatter_check: {field: type, value: distinctions}   # мн.ч. — отличается от "distinction" у атомарных карточек ECO.D ниже
+    storage: mixed   # содержит embedded-секции ECO.D.019 / ECO.D.020 — см. п.2 выше
+    # comment: это summary-документ "ядро различений", не атомарная карточка — отдельный kind от ECO.D,
+    # хотя оба используют префикс ECO.D в id (разные type, разная директория).
+
+  ECO.D:
+    dir: pack/ecosystem/02-distinctions/
+    id_pattern: 'ECO\.D\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: distinction}
+    storage: mixed   # см. п.2 выше (консенсус DP.D) — покрывает 001-009, 013 здесь;
+    # 010-012 — легализованное исключение (директория business/, записи ниже);
+    # 019, 020 — embedded-секции в ECO.D.000 (01B-distinctions.md), не отдельные файлы.
+
+  ECO.D.010-payment-models:
+    dir: pack/ecosystem/02-domain-entities/business/
+    id_pattern: 'ECO\.D\.010-payment-models\.md$'   # точное имя — легализованное исключение из ECO.D (business/README.md "мини-инкарнация v1")
+    frontmatter_check: {field: type, value: distinction}
+    storage: file
+
+  ECO.D.011-retention-vs-cancel:
+    dir: pack/ecosystem/02-domain-entities/business/
+    id_pattern: 'ECO\.D\.011-retention-vs-cancel\.md$'
+    frontmatter_check: {field: type, value: distinction}
+    storage: file
+
+  ECO.D.012-money-vs-balances:
+    dir: pack/ecosystem/02-domain-entities/business/
+    id_pattern: 'ECO\.D\.012-money-vs-balances\.md$'
+    frontmatter_check: {field: type, value: distinction}
+    storage: file
+
+  ECO.PIPE:
+    dir: pack/ecosystem/02-domain-entities/
+    id_pattern: 'ECO\.PIPE\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: pipe}
+    storage: file
+
+  ECO.ROLE:
+    dir: pack/ecosystem/02-domain-entities/
+    id_pattern: 'ECO\.ROLE\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: domain-entity}
+    storage: file
+
+  ECO.SYS:
+    dir: pack/ecosystem/02-domain-entities/
+    id_pattern: 'ECO\.SYS\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: sys}
+    storage: file
+
+  ECO.SC:
+    dir: pack/ecosystem/02-domain-entities/
+    id_pattern: 'ECO\.SC\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: sc}
+    storage: file   # покрывает ECO.SC.003 здесь; 001-002 — легализованное исключение ниже (см. п.3 выше)
+
+  ECO.SC.001-payment-receipt:
+    dir: pack/ecosystem/02-domain-entities/business/
+    id_pattern: 'ECO\.SC\.001-payment-receipt\.md$'   # точное имя — легализованное исключение из ECO.SC (business/README.md)
+    frontmatter_check: {field: type, value: sc}
+    storage: file
+
+  ECO.SC.002-refund-policy:
+    dir: pack/ecosystem/02-domain-entities/business/
+    id_pattern: 'ECO\.SC\.002-refund-policy\.md$'
+    frontmatter_check: {field: type, value: sc}
+    storage: file
+
+  ECO.M:
+    dir: pack/ecosystem/03-methods/
+    id_pattern: 'ECO\.M\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: method}
+    storage: file
+
+  ECO.WP:
+    dir: pack/ecosystem/04-work-products/
+    id_pattern: 'ECO\.WP\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: work-product}
+    storage: file
+
+  ECO.FM:
+    dir: pack/ecosystem/05-failure-modes/
+    id_pattern: 'ECO\.FM\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: failure-mode}
+    storage: file
+
+  ECO.SOTA:
+    dir: pack/ecosystem/06-sota/
+    id_pattern: 'ECO\.SOTA\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: {field: type, value: sota}
+    storage: file
+
+  ECO.MAP.BIND:
+    dir: pack/ecosystem/07-map/
+    id_pattern: 'ECO\.MAP\.BIND\.\d{3}-[a-z0-9-]+\.md$'
+    frontmatter_check: null   # реальность: frontmatter без поля type (id/name/scope/status/source_wp/created/valid_from/related/s2r_families)
+    storage: file
+
+  ECO.MAP:
+    dir: pack/ecosystem/07-map/
+    id_pattern: 'ECO\.MAP\.\d{3}\.md$'   # реальность: единственный файл ECO.MAP.001.md, без slug после номера (см. RHE.MAP в PACK-rhetoric для того же паттерна)
+    frontmatter_check: null   # реальность: frontmatter без поля type (id/name/scope/created/last_updated/generated)
+    storage: file
+
+  ECO.MAP.002:
+    dir: pack/ecosystem/07-map/
+    id_pattern: 's2r-view\.md$'   # реальность: имя файла без ID-префикса (s2r-view.md, не ECO.MAP.002.md), см. п.4 выше
+    frontmatter_check: null   # реальность: frontmatter без поля type
+    storage: file   # auto-generated: true — regenerate: python3 scripts/generate-s2r-view.py, не редактировать руками
