@@ -80,6 +80,7 @@
 | ECO.M.025 | Outcome Tags for Support Log | M | — | active |
 | ECO.M.026 | Audience Segment Description 13 Blocks | M | Структурированное описание сегмента целевой аудитории из 13 блоков: от болей и JTBD до критериев отбора и связей с другими сегментами | draft |
 | ECO.M.027 | Benchmark Showcase: бенчмарк публичной витрины против одного известного альтернативного продукта | M | — | active |
+| ECO.M.028 | Signal-based Outbound | M | Метод управляемого привлечения по сигналам: сегментация по уровням ценности/скорости, последовательности касаний, три потока (созидатели, провайдеры ценности, партнёры) | draft |
 | ECO.MAP.001 | Pack Navigation Map | MAP | — | — |
 | ECO.MAP.002 | S2R Domain View | MAP | — | — |
 | ECO.MAP.BIND.001 | Мост Pack↔БД: системы продвижения → Neon | MAP | — | draft |
